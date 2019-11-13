@@ -79,19 +79,16 @@ object AkkaVersionCheckPlugin extends AutoPlugin {
             val allModules = updateReport.configurations.flatMap(_.modules)
             val moduleReport = allModules.find(r =>
               r.module.organization == module.organization && r.module.name == module.name)
-            moduleReport match {
+            val tsText = moduleReport match {
               case Some(report) =>
-                throw new MessageOnlyException(
-                  s"""| Non matching $project module versions, previously seen version $version,
-                      | but module ${module.name} has version ${module.revision}.
-                      | Transitive dependencies from ${report.callers.mkString("[", ", ", "]")}.
-            """.stripMargin)
+                s"Transitive dependencies from ${report.callers.mkString("[", ", ", "]")}"
               case None =>
-                throw new MessageOnlyException(
-                  s"""| Non matching $project module versions, previously seen version $version,
-                      | but module ${module.name} has version ${module.revision}.
-            """.stripMargin)
+                ""
             }
+            throw new MessageOnlyException(
+              s"""| Non matching $project module versions, previously seen version $version, but module ${module.name} has version ${module.revision}.
+                  | $tsText""".stripMargin.trim
+            )
 
           } else Some(version)
         case None => Some(module.revision)
