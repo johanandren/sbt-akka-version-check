@@ -18,7 +18,7 @@ object AkkaVersionCheckPlugin extends AutoPlugin {
   import autoImport._
 
   override lazy val projectSettings = Seq(
-    checkAkkaModuleVersions := checkModuleVersions(update.value.allModules, streams.value.log)
+    checkAkkaModuleVersions := checkModuleVersions(updateFull.value, streams.value.log)
   )
 
   override lazy val buildSettings = Seq()
@@ -44,8 +44,9 @@ object AkkaVersionCheckPlugin extends AutoPlugin {
   private case object AkkaHttp extends Group
   private case object Others extends Group
 
-  def checkModuleVersions(allModules: Seq[ModuleID], log: Logger): AkkaVersionReport = {
+  def checkModuleVersions(updateReport: UpdateReport, log: Logger): AkkaVersionReport = {
     log.debug("Checking Akka module versions")
+    val allModules = updateReport.allModules
     val grouped = allModules.groupBy(m =>
       if (m.organization == "com.typesafe.akka") {
         val nameWithoutScalaV = m.name.dropRight(5)
@@ -55,10 +56,10 @@ object AkkaVersionCheckPlugin extends AutoPlugin {
       }
     )
     val akkaVersion = grouped.get(Akka)
-      .flatMap(verifyVersions("Akka", _))
+      .flatMap(verifyVersions("Akka", _, updateReport))
       .map(VersionNumber.apply)
     val akkaHttpVersion = grouped.get(AkkaHttp)
-      .flatMap(verifyVersions("Akka HTTP", _)
+      .flatMap(verifyVersions("Akka HTTP", _, updateReport)
       .map(VersionNumber.apply))
 
     (akkaVersion, akkaHttpVersion) match {
@@ -70,17 +71,28 @@ object AkkaVersionCheckPlugin extends AutoPlugin {
     AkkaVersionReport(akkaVersion, akkaHttpVersion)
   }
 
-  private def verifyVersions(project: String, modules: Seq[ModuleID]): Option[String] =
+  private def verifyVersions(project: String, modules: Seq[ModuleID], updateReport: UpdateReport): Option[String] =
     modules.foldLeft(None: Option[String]) { (prev, module) =>
       prev match {
         case Some(version) =>
           if (module.revision != version) {
-            // FIXME find out what pulled it in if transitive and say that as well in text
-            // (do we need the depgraph plugin for that?)
-            throw new MessageOnlyException(
-              s"""| Non matching $project module versions, previously seen version $version,
-                  | but module ${module.name} has version ${module.revision}.
+            val allModules = updateReport.configurations.flatMap(_.modules)
+            val moduleReport = allModules.find(r =>
+              r.module.organization == module.organization && r.module.name == module.name)
+            moduleReport match {
+              case Some(report) =>
+                throw new MessageOnlyException(
+                  s"""| Non matching $project module versions, previously seen version $version,
+                      | but module ${module.name} has version ${module.revision}.
+                      | Transitive dependencies from ${report.callers.mkString("[", ", ", "]")}.
             """.stripMargin)
+              case None =>
+                throw new MessageOnlyException(
+                  s"""| Non matching $project module versions, previously seen version $version,
+                      | but module ${module.name} has version ${module.revision}.
+            """.stripMargin)
+            }
+
           } else Some(version)
         case None => Some(module.revision)
       }
