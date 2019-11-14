@@ -1,11 +1,11 @@
 name := """sbt-akka-version-check"""
 organization := "com.lightbend.akka"
-version := "0.1-SNAPSHOT"
+version := "0.1"
 
 sbtPlugin := true
 
 bintrayPackageLabels := Seq("sbt","plugin")
-bintrayVcsUrl := Some("""git@github.com:com.lightbend.akka/sbt-akka-version-check.git""")
+bintrayVcsUrl := Some("""git@github.com:johanandren/sbt-akka-version-check.git""")
 
 initialCommands in console := """import com.lightbend.akka.sbtvc._"""
 
