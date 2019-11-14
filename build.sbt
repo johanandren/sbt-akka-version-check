@@ -1,6 +1,6 @@
 name := """sbt-akka-version-check"""
 organization := "com.lightbend.akka"
-version := "0.1"
+version := "0.2-SNAPSHOT"
 
 sbtPlugin := true
 
