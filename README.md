@@ -8,8 +8,6 @@ This plugin requires sbt 1.0.0+
 
 Add the plugin to your project, for example in `project/plugins.sbt`:
 
-*Note WIP*: not actually published yet
-
 ```
 addSbtPlugin("com.lightbend.akka" % "sbt-akka-version-check" % "0.1")
 ```
