@@ -4,7 +4,7 @@ version := "0.2-SNAPSHOT"
 
 sbtPlugin := true
 
-initialCommands in console := """import com.lightbend.akka.sbtvc._"""
+console / initialCommands := """import com.lightbend.akka.sbtvc._"""
 
 enablePlugins(ScriptedPlugin)
 // set up 'scripted; sbt plugin for testing sbt plugins
