@@ -4,9 +4,6 @@ version := "0.2-SNAPSHOT"
 
 sbtPlugin := true
 
-bintrayPackageLabels := Seq("sbt","plugin")
-bintrayVcsUrl := Some("""git@github.com:johanandren/sbt-akka-version-check.git""")
-
 initialCommands in console := """import com.lightbend.akka.sbtvc._"""
 
 enablePlugins(ScriptedPlugin)
