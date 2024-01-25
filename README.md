@@ -9,7 +9,7 @@ This plugin requires sbt 1.0.0+
 Add the plugin to your project, for example in `project/plugins.sbt`:
 
 ```
-addSbtPlugin("com.lightbend.akka" % "sbt-akka-version-check" % "0.1")
+addSbtPlugin("com.markatta" % "sbt-akka-version-check" % "0.1")
 ```
 
 Trigger the version check through the `checkAkkaModuleVersions` task. The check will fail the build if there

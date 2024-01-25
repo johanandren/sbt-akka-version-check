@@ -1,4 +1,4 @@
-package com.lightbend.akka.sbtvc
+package com.markatta.akka.sbtvc
 
 import sbt._
 import sbt.Keys._
