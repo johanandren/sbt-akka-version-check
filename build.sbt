@@ -1,5 +1,5 @@
 name := """sbt-akka-version-check"""
-organization := "com.lightbend.akka"
+organization := "com.markatta"
 homepage := Some(url("https://github.com/johanandren/sbt-akka-version-check"))
 licenses += "Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.html")
 developers += Developer(
@@ -10,7 +10,7 @@ developers += Developer(
 )
 
 
-console / initialCommands := """import com.lightbend.akka.sbtvc._"""
+initialCommands in console := """import com.markatta.akka.sbtvc._"""
 
 enablePlugins(SbtPlugin)
 
