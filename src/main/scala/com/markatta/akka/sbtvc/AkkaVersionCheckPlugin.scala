@@ -37,21 +37,27 @@ object AkkaVersionCheckPlugin extends AutoPlugin {
     "akka-http", "akka-http-caching", "akka-http-core", "akka-http-jackson", "akka-http-marshallers-java",
     "akka-http-marshallers-scala", "akka-http-root", "akka-http-spray-json", "akka-http-testkit", "akka-http-xml",
     "akka-http2-support", "akka-parsing")
-
+  private val akkaManagementModules = Set(
+    "akka-discovery-aws-api", "akka-discovery-marathon-api", "akka-discovery-aws-api-async",
+    "akka-discovery-kubernetes-api", "akka-lease-kubernetes", "akka-management",
+    "akka-management-cluster-bootstrap", "akka-management-cluster-http", "akka-rolling-update-kubernetes"
+  )
 
   private sealed trait Group
   private case object Akka extends Group
   private case object AkkaHttp extends Group
+  private case object AkkaManagement extends Group
   private case object Others extends Group
 
   def checkModuleVersions(updateReport: UpdateReport, log: Logger): AkkaVersionReport = {
     log.debug("Checking Akka module versions")
     val allModules = updateReport.allModules
     val grouped = allModules.groupBy(m =>
-      if (m.organization == "com.typesafe.akka") {
+      if (m.organization == "com.typesafe.akka" || m.organization.startsWith("com.lightbend.akka")) {
         val nameWithoutScalaV = m.name.dropRight(5)
         if (coreModules(nameWithoutScalaV)) Akka
         else if (akkaHttpModules(nameWithoutScalaV)) AkkaHttp
+        else if (akkaManagementModules(nameWithoutScalaV)) AkkaManagement
         else Others
       }
     )
@@ -61,6 +67,9 @@ object AkkaVersionCheckPlugin extends AutoPlugin {
     val akkaHttpVersion = grouped.get(AkkaHttp)
       .flatMap(verifyVersions("Akka HTTP", _, updateReport)
       .map(VersionNumber.apply))
+    val akkaManagementVersion = grouped.get(AkkaManagement)
+      .flatMap(verifyVersions("Akka Management", _, updateReport)
+        .map(VersionNumber.apply))
 
     (akkaVersion, akkaHttpVersion) match {
       case (Some(akkaV), Some(akkaHttpV)) =>
