@@ -106,7 +106,7 @@ object AkkaVersionCheckPlugin extends AutoPlugin {
 
 
 
-  private def verifyAkkaHttpAkkaRequirement(akkaHttpVersion: VersionNumber, akkaVersion: VersionNumber): Unit = {
+  private def verifyAkkaHttpAkkaRequirement(akkaVersion: VersionNumber, akkaHttpVersion: VersionNumber): Unit = {
     if (akkaHttpVersion.matchesSemVer(SemanticSelector("10.1")) &&
       akkaVersion.matchesSemVer(SemanticSelector("<2.5"))) {
       throw new MessageOnlyException(s"Akka HTTP requires Akka 2.5 or later but was $akkaVersion")
