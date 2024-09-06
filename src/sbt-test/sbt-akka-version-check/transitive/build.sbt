@@ -1,5 +1,5 @@
 version := "0.1"
-scalaVersion := "2.12.19"
+scalaVersion := "2.12.20"
 
 // transitive dependency mismatch (Couchbase 1.0 pulls in Akka 2.5.21 modules)
 libraryDependencies ++= Seq(
