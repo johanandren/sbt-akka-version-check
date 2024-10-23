@@ -54,7 +54,7 @@ object AkkaVersionCheckPlugin extends AutoPlugin {
     val allModules = updateReport.allModules
     val grouped = allModules.groupBy(m =>
       if (m.organization == "com.typesafe.akka" || m.organization.startsWith("com.lightbend.akka")) {
-        val nameWithoutScalaV = m.name.dropRight(5)
+        val nameWithoutScalaV = m.name.replaceFirst("(_2\\.\\d\\d|_3)$", "")
         if (coreModules(nameWithoutScalaV)) Akka
         else if (akkaHttpModules(nameWithoutScalaV)) AkkaHttp
         else if (akkaManagementModules(nameWithoutScalaV)) AkkaManagement
