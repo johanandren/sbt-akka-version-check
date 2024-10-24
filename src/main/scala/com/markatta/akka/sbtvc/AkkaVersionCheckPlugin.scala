@@ -52,15 +52,15 @@ object AkkaVersionCheckPlugin extends AutoPlugin {
   def checkModuleVersions(updateReport: UpdateReport, log: Logger): AkkaVersionReport = {
     log.debug("Checking Akka module versions")
     val allModules = updateReport.allModules
-    val grouped = allModules.groupBy(m =>
-      if (m.organization == "com.typesafe.akka" || m.organization.startsWith("com.lightbend.akka")) {
+    val grouped = allModules
+      .filter(m => m.organization == "com.typesafe.akka" || m.organization.startsWith("com.lightbend.akka"))
+      .groupBy{m =>
         val nameWithoutScalaV = m.name.replaceFirst("(_2\\.\\d\\d|_3)$", "")
         if (coreModules(nameWithoutScalaV)) Akka
         else if (akkaHttpModules(nameWithoutScalaV)) AkkaHttp
         else if (akkaManagementModules(nameWithoutScalaV)) AkkaManagement
         else Others
       }
-    )
     val akkaVersion = grouped.get(Akka)
       .flatMap(verifyVersions("Akka", _, updateReport))
       .map(VersionNumber.apply)
