@@ -17,9 +17,12 @@ object AkkaVersionCheckPlugin extends AutoPlugin {
 
   import autoImport._
 
-  override lazy val projectSettings = Seq(
-    checkAkkaModuleVersions := checkModuleVersions(updateFull.value, streams.value.log)
-  )
+  override lazy val projectSettings = {
+    import com.markatta.akka.sbtvc.Compat._
+    Seq(
+      checkAkkaModuleVersions := Def.uncached { checkModuleVersions(updateFull.value, streams.value.log) }
+    )
+  }
 
   override lazy val buildSettings = Seq()
 

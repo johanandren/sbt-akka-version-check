@@ -14,10 +14,13 @@ initialCommands in console := """import com.markatta.akka.sbtvc._"""
 
 enablePlugins(SbtPlugin)
 
-crossScalaVersions := Seq("2.12.20")
+scalaVersion := "2.12.20"
+crossScalaVersions += "3.7.2"
+
 pluginCrossBuild / sbtVersion := {
   scalaBinaryVersion.value match {
     case "2.12" => "1.9.7" // set minimum sbt version
+    case _      => "2.0.0-RC4"
   }
 }
 
