@@ -10,7 +10,7 @@ developers += Developer(
 )
 
 
-initialCommands in console := """import com.markatta.akka.sbtvc._"""
+console / initialCommands := """import com.markatta.akka.sbtvc._"""
 
 enablePlugins(SbtPlugin)
 
