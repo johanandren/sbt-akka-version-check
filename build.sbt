@@ -15,7 +15,7 @@ console / initialCommands := """import com.markatta.akka.sbtvc._"""
 enablePlugins(SbtPlugin)
 
 scalaVersion := "2.12.20"
-crossScalaVersions += "3.7.3"
+crossScalaVersions += "3.7.4"
 
 pluginCrossBuild / sbtVersion := {
   scalaBinaryVersion.value match {
