@@ -14,15 +14,17 @@ console / initialCommands := """import com.markatta.akka.sbtvc._"""
 
 enablePlugins(SbtPlugin)
 
-scalaVersion := "2.12.20"
-crossScalaVersions += "3.7.3"
+scalaVersion := "2.12.21"
+crossScalaVersions := Seq("2.12.21", "3.9.0")
 
 pluginCrossBuild / sbtVersion := {
   scalaBinaryVersion.value match {
     case "2.12" => "1.9.7" // set minimum sbt version
-    case _      => "2.0.0-RC4"
+    case _      => "2.1.0"
   }
 }
+
+scriptedSbt := (if (scalaBinaryVersion.value == "2.12") "1.13.1" else "2.1.0")
 
 // set up 'scripted; sbt plugin for testing sbt plugins
 scriptedLaunchOpts ++=
@@ -37,4 +39,8 @@ ThisBuild / dynverVTagPrefix := true
 Global / onLoad := (Global / onLoad).value.andThen { s =>
   dynverAssertTagVersion.value
   s
+}
+
+scalacOptions ++= {
+  if (scalaBinaryVersion.value == "2.12") Seq("-Xsource:3", "-release:8") else Nil
 }
