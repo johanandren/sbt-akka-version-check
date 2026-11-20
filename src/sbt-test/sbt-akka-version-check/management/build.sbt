@@ -1,13 +1,11 @@
 version := "0.1"
 scalaVersion := "2.13.14"
 
-resolvers += "Akka library repository".at("https://repo.akka.io/maven")
-
 // direct dependency mismatch
 libraryDependencies ++= Seq(
-  "com.typesafe.akka" %% "akka-discovery" % "2.9.2",
-  "com.lightbend.akka.management" %% "akka-management" % "1.5.1",
-  "com.lightbend.akka.discovery" %% "akka-discovery-aws-api" % "1.5.0"
+  "com.typesafe.akka" %% "akka-discovery" % "2.6.14",
+  "com.lightbend.akka.management" %% "akka-management" % "1.1.4",
+  "com.lightbend.akka.discovery" %% "akka-discovery-aws-api" % "1.1.3"
 )
 
 TaskKey[Unit]("check") := {
